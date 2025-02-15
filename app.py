@@ -41,19 +41,29 @@ disease_data = {
     }
 }
 
-@app.route('/get_disease_info', methods=['POST'])
+# @app.route('/get_disease_info', methods=['POST'])
+# def get_disease_info():
+#     data = request.json
+#     disease_name = data.get('disease_name')
+    
+#     if not disease_name:
+#         return jsonify({"error": "Disease name is required"}), 400
+
+#     disease_info = disease_data.get(disease_name)
+#     if disease_info:
+#         return jsonify(disease_info)
+#     else:
+#         return jsonify({"error": "Disease not found"}), 404
+@app.route('/get_disease_info', methods=['GET', 'POST'])
 def get_disease_info():
-    data = request.json
-    disease_name = data.get('disease_name')
+    disease_name = request.args.get('disease_name') if request.method == 'GET' else request.json.get('disease_name')
     
     if not disease_name:
         return jsonify({"error": "Disease name is required"}), 400
 
     disease_info = disease_data.get(disease_name)
-    if disease_info:
-        return jsonify(disease_info)
-    else:
-        return jsonify({"error": "Disease not found"}), 404
+    return jsonify(disease_info) if disease_info else jsonify({"error": "Disease not found"}), 404
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
